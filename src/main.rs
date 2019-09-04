@@ -1,14 +1,13 @@
-#[macro_use]
-extern crate clap;
-
 use clap::{App, Arg};
 use std::process;
 
+mod rsline;
+
 fn main() {
     let matches = App::new("rust-dbg")
-        .version(crate_version!())
+        .version(clap::crate_version!())
         .about("Basic debugger(just use gdb instead)")
-        .author(crate_authors!())
+        .author(clap::crate_authors!())
         .arg(
             Arg::with_name("target")
                 .short("t")
@@ -27,4 +26,6 @@ fn main() {
     });
 
     println!("target: {}", target);
+
+    rsline::sandbox();
 }
