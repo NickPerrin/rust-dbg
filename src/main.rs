@@ -2,6 +2,7 @@ use clap::{App, Arg};
 use std::process;
 
 mod rsline;
+mod fork_exec;
 
 fn main() {
     let matches = App::new("rust-dbg")
@@ -27,5 +28,9 @@ fn main() {
 
     println!("target: {}", target);
 
-    rsline::sandbox();
+    // todo 
+        // if no target provided, open line terminal
+
+    //rsline::sandbox();
+    fork_exec::fork_process();
 }
