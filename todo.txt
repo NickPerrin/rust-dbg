@@ -1,0 +1,25 @@
+Minimal functionality
+    continue execution of tracee from the io loop
+    
+    kill the tracee from the io loop
+
+Basic features
+    Memory watchpoints
+        read only
+        write only
+        read and write
+    
+    Function breakpoints
+
+    File line breakpoints
+
+    Step through code
+        step over
+        step into
+        step out
+
+    show values in Memory
+
+    print variables
+
+    call functions
