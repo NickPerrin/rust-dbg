@@ -1,7 +1,10 @@
 Minimal functionality
-    continue execution of tracee from the io loop
-    
-    kill the tracee from the io loop
+    debugger::run should actually loop
+        add quit command
+
+    Expand waitpid wrapper to detect the state of the tracee
+
+    use clap for command handling inside the io loop
 
 Basic features
     Memory watchpoints
