@@ -1,29 +1,32 @@
 use nix::sys::ptrace::traceme;
 use nix::sys::signal::{kill, SIGKILL};
-use nix::unistd::{execv, fork, ForkResult, Pid};
+use nix::unistd::{execv, fork, ForkResult};
 use std::ffi::CString;
 use std::process;
 
 use crate::debugger;
-use crate::waitpid;
 
 pub fn fork_process(tracee: &str) {
     match fork() {
+        // This is the parent process(tracer)
         Ok(ForkResult::Parent { child }) => {
             // @todo replace with proper error/result handling
-            waitpid::wait_pid(child).unwrap();
+            //waitpid::wait_pid(child).unwrap();
 
             // @todo replace unwrap for better error handling
-            debugger::initialize(child, &tracee).unwrap();
+            if let Ok(tracer) = debugger::initialize(child, &tracee) {
+                debugger::run(tracer).unwrap();
+                return;
+            }
 
-            // @todo remove when kill command is implemented
-            kill_tracee(&child);
+            kill(child, SIGKILL).expect("kill failed!");
         }
+        // This is the child process(tracee)
         Ok(ForkResult::Child) => {
             match traceme() {
                 Ok(_) => (),
                 Err(_) => {
-                    println!("tracee ptrace called failed");
+                    println!("tracee ptrace call failed");
                     process::exit(1);
                 }
             };
@@ -36,7 +39,7 @@ pub fn fork_process(tracee: &str) {
                 }
             };
 
-            // @todo figure out how to pass arguements to the tracee
+            // @todo figure out how to pass arguments to the tracee
             match execv(&tracee, &[]) {
                 Ok(_) => (),
                 Err(_) => {
@@ -47,9 +50,4 @@ pub fn fork_process(tracee: &str) {
         }
         _ => println!("Fork failed!"),
     };
-}
-
-// @todo possibly move into debugger module
-fn kill_tracee(child: &Pid) {
-    kill(*child, SIGKILL).expect("kill failed!");
 }

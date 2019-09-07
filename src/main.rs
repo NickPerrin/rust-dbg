@@ -12,8 +12,8 @@ fn main() {
         .author(clap::crate_authors!())
         .arg(
             Arg::with_name("target")
-                .short("t")
-                .long("target")
+                //.short("t")
+                //.long("target")
                 .value_name("Inferior")
                 .help("The program to be debugged")
                 .required(true)
