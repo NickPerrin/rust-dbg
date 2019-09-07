@@ -3,7 +3,10 @@ use std::process;
 
 mod debugger;
 mod fork_exec;
+mod reader;
+mod tracer;
 mod waitpid;
+
 
 fn main() {
     let matches = App::new("rust-dbg")
