@@ -1,8 +1,9 @@
 use clap::{App, Arg};
 use std::process;
 
+mod debugger;
 mod fork_exec;
-mod rsline;
+mod waitpid;
 
 fn main() {
     let matches = App::new("rust-dbg")
@@ -21,13 +22,10 @@ fn main() {
         )
         .get_matches();
 
+    // @todo support starting without target, specifying in the io loop
     let target = matches.value_of("target").unwrap_or_else(|| {
         println!("No value provided for target");
         process::exit(1);
     });
-
-    println!("target: {}", target);
-
-    //rsline::sandbox();
     fork_exec::fork_process(&target);
 }
