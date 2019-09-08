@@ -24,11 +24,24 @@ impl Parser {
         }
     }
 
-    pub fn parse_command(&self, cmd: String) -> Option<&Command> {
+    pub fn parse_command(&self, mut cmd: String) -> Option<&Command> {
         // for now, only supporting basic commands.
         // Will add support for sub-commands as necessary.
         // i.e "break <function name>"
+        if cmd.chars().count() == 0 {
+            return None;
+        }
+        self.expand(&mut cmd);
+        self.command_map.get(&cmd)
+    }
 
-        self.command_map.get(&cmd.to_lowercase())
+    fn expand(&self, cmd: &mut String) {
+        for (key, _value) in self.command_map.iter() {
+            if key.chars().next() == cmd.chars().next() {
+                *cmd = key.clone();
+                break;
+            }
+        }
+        ()
     }
 }

@@ -1,10 +1,11 @@
 Minimal functionality
-    debugger::run should actually loop
-        add quit command
+    store debugger state in struct
+        tracer, parser, reader and associated functions
 
-    Expand waitpid wrapper to detect the state of the tracee
+        name and pid of the tracee
+        
+        has the tracee started
 
-    use clap for command handling inside the io loop
 
 Basic features
     Memory watchpoints
