@@ -3,10 +3,10 @@ use std::process;
 
 mod debugger;
 mod fork_exec;
+mod parser;
 mod reader;
 mod tracer;
 mod waitpid;
-
 
 fn main() {
     let matches = App::new("rust-dbg")
@@ -15,8 +15,6 @@ fn main() {
         .author(clap::crate_authors!())
         .arg(
             Arg::with_name("target")
-                //.short("t")
-                //.long("target")
                 .value_name("Inferior")
                 .help("The program to be debugged")
                 .required(true)

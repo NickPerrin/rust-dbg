@@ -1,3 +1,4 @@
+use nix::errno::Errno::ESRCH;
 use nix::sys::ptrace::cont;
 use nix::sys::signal::{kill, SIGKILL};
 use nix::unistd::Pid;
@@ -19,8 +20,12 @@ impl<'a> Tracer<'a> {
 
     pub fn kill_tracee(&self) {
         println!("Killing tracee");
-        // @todo replace expect
-        kill(self.pid, SIGKILL).expect("kill failed!");
+        if let Err(error) = kill(self.pid, SIGKILL) {
+            match error {
+                nix::Error::Sys(ESRCH) => println!("The tracee is not running"),
+                _ => (),
+            }
+        }
     }
 
     pub fn continue_tracee(&self) {
@@ -28,5 +33,12 @@ impl<'a> Tracer<'a> {
         // @todo replace expect
         cont(self.pid, None).expect("continue failed!");
         waitpid::wait_pid(self.pid).expect("waitpid failed after continue");
+    }
+
+    pub fn quit(&self) {
+        println!("Goodbye!");
+        match kill(self.pid, SIGKILL) {
+            _ => (),
+        }
     }
 }
