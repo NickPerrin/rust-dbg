@@ -8,7 +8,7 @@ use crate::parser::{Command, Parser};
 use crate::reader::Reader;
 use crate::waitpid;
 
-const INTRO: &str = "\nWelcome to rust-dbg! \nuse help for more information\n";
+const INTRO: &str = "\nWelcome to rust-dbg! \nuse \"help\" for more information\n";
 
 #[derive(PartialEq)]
 enum State {
@@ -27,7 +27,7 @@ pub struct Debugger {
 impl Debugger {
     pub fn new(pid: Pid, tracee: &str) -> Debugger {
         println!("{}", INTRO);
-        println!("Debugging {} | pid {}", tracee, pid);
+        println!("Debugging {} | pid {}\n", tracee, pid);
 
         // @todo replace unwrap
         waitpid::wait_pid(pid).unwrap();
@@ -54,6 +54,7 @@ impl Debugger {
                 Some(Command::Kill) => self.kill_tracee(),
                 Some(Command::Quit) => self.quit(),
                 Some(Command::Run) => self.run_tracee(),
+                Some(Command::Help) => Debugger::show_help(),
                 _ => println!("unknown command"),
             }
         }
@@ -106,5 +107,12 @@ impl Debugger {
         match kill(self.pid, SIGKILL) {
             _ => (),
         }
+    }
+
+    fn show_help() {
+        println!("run, r -- start the tracee");
+        println!("continue, c -- continue the tracee");
+        println!("kill, k -- kill the tracee");
+        println!("quit, q -- exit");
     }
 }
