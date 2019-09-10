@@ -1,12 +1,3 @@
-Minimal functionality
-    store debugger state in struct
-        tracer, parser, reader and associated functions
-
-        name and pid of the tracee
-        
-        has the tracee started
-
-
 Basic features
     Memory watchpoints
         read only

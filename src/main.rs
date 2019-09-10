@@ -28,5 +28,5 @@ fn main() {
         println!("No value provided for target");
         process::exit(1);
     });
-    fork_exec::fork_process(&target);
+    fork_exec::fork_process(String::from(target));
 }

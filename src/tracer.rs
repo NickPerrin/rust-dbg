@@ -5,13 +5,15 @@ use nix::unistd::Pid;
 
 use crate::waitpid;
 
-pub struct Tracer<'a> {
+pub struct Tracer {
     pub pid: Pid,
-    pub tracee: &'a str,
+    pub tracee: String,
 }
 
-impl<'a> Tracer<'a> {
-    pub fn new(pid: Pid, tracee: &str) -> Tracer {
+impl Tracer {
+    pub fn new(pid: Pid, tracee: String) -> Tracer {
+        // @todo replace unwrap
+        waitpid::wait_pid(pid).unwrap();
         Tracer {
             pid: pid,
             tracee: tracee,

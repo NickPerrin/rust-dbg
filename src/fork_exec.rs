@@ -4,22 +4,17 @@ use nix::unistd::{execv, fork, ForkResult};
 use std::ffi::CString;
 use std::process;
 
-use crate::debugger;
+use crate::debugger::Debugger;
 
-pub fn fork_process(tracee: &str) {
+pub fn fork_process(tracee: String) {
     match fork() {
         // This is the parent process(tracer)
         Ok(ForkResult::Parent { child }) => {
-            // @todo replace with proper error/result handling
-            //waitpid::wait_pid(child).unwrap();
-
-            // @todo replace unwrap for better error handling
-            if let Ok(tracer) = debugger::initialize(child, &tracee) {
-                debugger::run(tracer).unwrap();
-                return;
+            let mut debugger = Debugger::new(child, tracee);
+            if let Err(_) = debugger.run() {
+                kill(child, SIGKILL).expect("kill failed!");
             }
-
-            kill(child, SIGKILL).expect("kill failed!");
+            
         }
         // This is the child process(tracee)
         Ok(ForkResult::Child) => {
