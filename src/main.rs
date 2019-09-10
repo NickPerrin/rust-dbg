@@ -5,7 +5,6 @@ mod debugger;
 mod fork_exec;
 mod parser;
 mod reader;
-mod tracer;
 mod waitpid;
 
 fn main() {
@@ -28,5 +27,5 @@ fn main() {
         println!("No value provided for target");
         process::exit(1);
     });
-    fork_exec::fork_process(String::from(target));
+    fork_exec::fork_process(target);
 }

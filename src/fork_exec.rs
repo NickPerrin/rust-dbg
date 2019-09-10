@@ -6,7 +6,7 @@ use std::process;
 
 use crate::debugger::Debugger;
 
-pub fn fork_process(tracee: String) {
+pub fn fork_process(tracee: &str) {
     match fork() {
         // This is the parent process(tracer)
         Ok(ForkResult::Parent { child }) => {
@@ -14,7 +14,6 @@ pub fn fork_process(tracee: String) {
             if let Err(_) = debugger.run() {
                 kill(child, SIGKILL).expect("kill failed!");
             }
-            
         }
         // This is the child process(tracee)
         Ok(ForkResult::Child) => {
