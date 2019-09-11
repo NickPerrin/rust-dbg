@@ -1,6 +1,6 @@
 use nix::errno::Errno::ESRCH;
-use nix::sys::ptrace::cont;
-use nix::sys::signal::{kill, SIGKILL};
+use nix::sys::ptrace::{cont, step};
+use nix::sys::signal::{kill, Signal, SIGKILL};
 use nix::unistd::Pid;
 use std::io::Error;
 
@@ -54,6 +54,7 @@ impl Debugger {
                 Some(Command::Kill) => self.kill_tracee(),
                 Some(Command::Quit) => self.quit(),
                 Some(Command::Run) => self.run_tracee(),
+                Some(Command::Step) => self.single_step(),
                 Some(Command::Help) => Debugger::show_help(),
                 _ => println!("unknown command"),
             }
@@ -101,6 +102,21 @@ impl Debugger {
         }
     }
 
+    fn single_step(&mut self) {
+        match self.state {
+            State::Started => {
+                // @todo replace expect
+                if let Err(error) = step(self.pid, Signal::SIGUSR1) {
+                    match error {
+                        nix::Error::Sys(ESRCH) => println!("The tracee is not running"),
+                        _ => (),
+                    }
+                }
+            }
+            _ => println!("The tracee is not running"),
+        }
+    }
+
     fn quit(&mut self) {
         println!("Goodbye!");
         self.state = State::Exit;
@@ -112,6 +128,7 @@ impl Debugger {
     fn show_help() {
         println!("run, r -- start the tracee");
         println!("continue, c -- continue the tracee");
+        println!("step, s -- single step the tracee");
         println!("kill, k -- kill the tracee");
         println!("quit, q -- exit");
     }

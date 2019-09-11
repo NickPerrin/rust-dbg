@@ -7,6 +7,7 @@ pub enum Command {
     Quit,
     Run,
     Help,
+    Step,
 }
 
 pub struct Parser {
@@ -21,6 +22,7 @@ impl Parser {
                 "kill".to_string() => Command::Kill,
                 "quit".to_string() => Command::Quit,
                 "run".to_string() => Command::Run,
+                "step".to_string() => Command::Step,
                 "help".to_string() => Command::Help,
             },
         }
